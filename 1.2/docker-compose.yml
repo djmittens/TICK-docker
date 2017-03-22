@@ -26,26 +26,26 @@ services:
     ports:
       - "8086:8086"
   # Define a Chronograf service
-  chronograf:
-    image: chronograf:1.0.0-rc1
-    volumes_from:
-      - chronograf-data
-    ports:
-      - "10000:10000"
-    links:
-      - influxdb
+  #chronograf:
+    #image: chronograf:1.0.0-rc1
+    #volumes_from:
+      #- chronograf-data
+    #ports:
+      #- "10000:10000"
+    #links:
+      #- influxdb
   # Define a Kapacitor service
-  kapacitor:
-    image: kapacitor:1.2.0
-    environment:
-      KAPACITOR_HOSTNAME: kapacitor
-      KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
-    volumes_from:
-      - kapacitor-data
-    links:
-      - influxdb
-    ports:
-      - "9092:9092"
+  #kapacitor:
+    #image: kapacitor:1.2.0
+    #environment:
+      #KAPACITOR_HOSTNAME: kapacitor
+      #KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
+    #volumes_from:
+      #- kapacitor-data
+    #links:
+      #- influxdb
+    #ports:
+      #- "9092:9092"
   # Define a service for using the influx CLI tool.
   # docker-compose run influxdb-cli
   influxdb-cli:
@@ -58,26 +58,26 @@ services:
       - influxdb
   # Define a service for using the kapacitor CLI tool.
   # docker-compose run kapacitor-cli
-  kapacitor-cli:
-    image: kapacitor:1.2.0
-    entrypoint: bash
-    environment:
-      KAPACITOR_URL: http://kapacitor:9092
-    links:
-      - kapacitor
+  #kapacitor-cli:
+    #image: kapacitor:1.2.0
+    #entrypoint: bash
+    #environment:
+      #KAPACITOR_URL: http://kapacitor:9092
+    #links:
+      #- kapacitor
 
   # Data Containers for the services
-  kapacitor-data:
-    image: kapacitor:1.2.0
-    entrypoint: /bin/bash
-    volumes:
-      - /var/lib/kapacitor
+  #kapacitor-data:
+    #image: kapacitor:1.2.0
+    #entrypoint: /bin/bash
+    #volumes:
+      #- /var/lib/kapacitor
 
-  chronograf-data:
-    image: chronograf:1.0.0-rc1
-    entrypoint: /bin/bash
-    volumes:
-      - /var/lib/chronograf
+  #chronograf-data:
+    #image: chronograf:1.0.0-rc1
+    #entrypoint: /bin/bash
+    #volumes:
+      #- /var/lib/chronograf
 
   grafana-data:
     image: grafana/grafana
