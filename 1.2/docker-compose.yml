@@ -3,9 +3,7 @@ version: '2'
 services:
   # Define a Telegraf service
   telegraf:
-    image: telegraf:1.2.0
-    volumes:
-      - ./etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    image: djmittens/infrastructure:telegraf-1.2.0
     links:
       - influxdb
     ports:
@@ -14,8 +12,8 @@ services:
       - "8125:8125/udp"
   grafana:
     image: grafana/grafana
-    volumes:
-      - ./data/grafana:/var/lib/grafana
+    volumes_from:
+      - grafana-data
     links:
       - influxdb
     ports:
@@ -23,15 +21,15 @@ services:
   # Define an InfluxDB service
   influxdb:
     image: influxdb:1.2.0
-    volumes:
-      - ./data/influxdb:/var/lib/influxdb
+    volumes_from:
+      - influxdb-data
     ports:
       - "8086:8086"
   # Define a Chronograf service
   chronograf:
     image: chronograf:1.0.0-rc1
-    volumes:
-      - ./data/chronograf:/var/lib/chronograf
+    volumes_from:
+      - chronograf-data
     ports:
       - "10000:10000"
     links:
@@ -42,8 +40,8 @@ services:
     environment:
       KAPACITOR_HOSTNAME: kapacitor
       KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
-    volumes:
-      - ./data/kapacitor:/var/lib/kapacitor
+    volumes_from:
+      - kapacitor-data
     links:
       - influxdb
     ports:
@@ -67,3 +65,28 @@ services:
       KAPACITOR_URL: http://kapacitor:9092
     links:
       - kapacitor
+
+  # Data Containers for the services
+  kapacitor-data:
+    image: kapacitor:1.2.0
+    entrypoint: /bin/bash
+    volumes:
+      - /var/lib/kapacitor
+
+  chronograf-data:
+    image: chronograf:1.0.0-rc1
+    entrypoint: /bin/bash
+    volumes:
+      - /var/lib/chronograf
+
+  grafana-data:
+    image: grafana/grafana
+    entrypoint: /bin/bash
+    volumes:
+      - /var/lib/grafana
+
+  influxdb-data:
+    image: influxdb:1.2.0
+    entrypoint: /bin/bash
+    volumes:
+      - /var/lib/influxdb
